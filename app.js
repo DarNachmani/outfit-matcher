@@ -296,3 +296,6 @@ document.querySelectorAll("[data-piece]").forEach((el) => {
 });
 history.replaceState(snapshot(), "");
 render();
+
+// Always load the newest version when online (see sw.js).
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
