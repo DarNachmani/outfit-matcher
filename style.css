@@ -117,16 +117,16 @@ h1 {
 .piece-row.active .piece-action { color: var(--ink); border-bottom: 1px solid var(--ink); }
 
 /* Panel */
-.panel { padding-block: 28px 120px; scroll-margin-top: 8px; }
+.panel { padding-block: 28px 190px; scroll-margin-top: 8px; }
 
 /* Floating mini preview */
 .mini-look {
   position: fixed;
   right: calc(16px + env(safe-area-inset-right, 0px));
   bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  width: 86px;
-  padding: 10px 12px 8px;
-  border-radius: 18px;
+  width: 104px;
+  padding: 12px 14px 9px;
+  border-radius: 22px;
   background: var(--card);
   box-shadow: 0 0 0 1px var(--hair), 0 8px 24px rgba(0, 0, 0, 0.22);
   opacity: 0;
@@ -136,7 +136,13 @@ h1 {
 }
 .mini-look.shown { opacity: 1; transform: none; pointer-events: auto; }
 .mini-look svg { display: block; width: 100%; overflow: visible; }
-.mini-look .block { cursor: inherit; stroke: rgba(128, 128, 128, 0.35); stroke-width: 1.5; }
+.mini-look .block {
+  cursor: inherit;
+  stroke: rgba(128, 128, 128, 0.35);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.mini-look .blk-jacket.empty { stroke: none; }
 .mini-look .hanger {
   fill: none;
   stroke: var(--muted);
@@ -155,13 +161,32 @@ h1 {
   color: var(--muted);
   text-align: center;
 }
-/* A little bounce whenever a color is picked */
-.mini-look.pop svg { animation: mini-pop 0.4s ease; }
-@keyframes mini-pop {
-  0% { transform: scale(1); }
-  40% { transform: scale(1.1) rotate(-3deg); }
-  70% { transform: scale(0.97) rotate(1.5deg); }
-  100% { transform: none; }
+/* Whenever a color is picked the outfit swings on its hanger and a sparkle twinkles */
+.mini-look .swing { transform-box: view-box; transform-origin: 60px -14px; }
+.mini-look.pop .swing { animation: mini-swing 0.9s ease-out; }
+@keyframes mini-swing {
+  0% { transform: rotate(0); }
+  20% { transform: rotate(-9deg); }
+  45% { transform: rotate(6deg); }
+  70% { transform: rotate(-3deg); }
+  88% { transform: rotate(1deg); }
+  100% { transform: rotate(0); }
+}
+.sparkle {
+  position: absolute;
+  top: 6px;
+  right: 9px;
+  font-size: 0.9rem;
+  line-height: 1;
+  color: #d0a23a;
+  opacity: 0;
+  pointer-events: none;
+}
+.mini-look.pop .sparkle { animation: sparkle 0.9s ease-out; }
+@keyframes sparkle {
+  0% { opacity: 0; transform: scale(0.3) rotate(0); }
+  30% { opacity: 1; transform: scale(1.2) rotate(30deg); }
+  100% { opacity: 0; transform: scale(0.6) rotate(90deg); }
 }
 .panel h2 {
   font: 500 1.75rem/1.15 var(--serif);

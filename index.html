@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="style.css?v=10">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
   <header class="masthead">
@@ -50,19 +50,23 @@
 
   <!-- Floating mini preview: shown once the main preview scrolls out of view -->
   <button id="mini-look" class="mini-look" aria-label="Back to top" hidden>
-    <svg viewBox="-4 -36 128 212" aria-hidden="true">
-      <!-- the outfit hangs from a little hanger -->
-      <path class="hanger" d="M60 -12 V-17 A8 8 0 1 0 52 -25 M60 -12 L6 8 M60 -12 L114 8"/>
-      <rect class="block blk-jacket" x="0" y="0" width="120" height="92" rx="10"/>
-      <rect class="block blk-shirt" x="0" y="0" width="120" height="92" rx="10"/>
-      <rect class="block blk-pants" x="0" y="97" width="120" height="58" rx="10"/>
-      <rect class="block blk-shoes" x="0" y="160" width="55" height="14" rx="7"/>
-      <rect class="block blk-shoes" x="65" y="160" width="55" height="14" rx="7"/>
+    <svg viewBox="-4 -26 128 222" aria-hidden="true">
+      <!-- a tiny outfit hanging from a hanger; the group swings when a color is picked -->
+      <g class="swing">
+        <path class="hanger" d="M60 2 V-6 A8 8 0 1 0 52 -14 M60 -4 L14 15 M60 -4 L106 15"/>
+        <path class="block blk-shirt" d="M42 6 Q60 18 78 6 L102 15 Q108 18 110 24 L115 41 Q116 46 111 47 L99 49 L99 92 Q99 96 95 96 L25 96 Q21 96 21 92 L21 49 L9 47 Q4 46 5 41 L10 24 Q12 18 18 15 Z"/>
+        <path class="block blk-jacket" d="M44 5 L17 14 Q10 17 9 24 L3 86 Q3 90 7 90 L15 90 Q18 90 18 86 L21 54 L21 97 Q21 101 25 101 L47 101 Q50 101 50 98 L48 12 Z"/>
+        <path class="block blk-jacket" d="M76 5 L103 14 Q110 17 111 24 L117 86 Q117 90 113 90 L105 90 Q102 90 102 86 L99 54 L99 97 Q99 101 95 101 L73 101 Q70 101 70 98 L72 12 Z"/>
+        <path class="block blk-pants" d="M25 105 L95 105 Q99 105 99 109 L97 164 Q97 168 93 168 L69 168 Q65 168 65 164 L60 126 L55 164 Q55 168 51 168 L27 168 Q23 168 23 164 L21 109 Q21 105 25 105 Z"/>
+        <rect class="block blk-shoes" x="14" y="173" width="42" height="15" rx="7.5"/>
+        <rect class="block blk-shoes" x="64" y="173" width="42" height="15" rx="7.5"/>
+      </g>
     </svg>
+    <span class="sparkle" aria-hidden="true">✦</span>
     <span class="mini-cap">Your look</span>
   </button>
 
-  <script src="colors.js?v=10"></script>
-  <script src="app.js?v=10"></script>
+  <script src="colors.js?v=11"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>
