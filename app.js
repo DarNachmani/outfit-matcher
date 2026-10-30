@@ -88,10 +88,11 @@ function paintLook() {
       el.classList.toggle("empty", !id);
     });
   }
-  const shirt = $(".blk-shirt");
   const framed = Boolean(state.outfit.jacket);
-  shirt.setAttribute("x", framed ? 38 : 0);
-  shirt.setAttribute("width", framed ? 44 : 120);
+  document.querySelectorAll(".blk-shirt").forEach((shirt) => {
+    shirt.setAttribute("x", framed ? 38 : 0);
+    shirt.setAttribute("width", framed ? 44 : 120);
+  });
 }
 
 function renderPieces() {
@@ -270,6 +271,16 @@ function reset() {
 }
 
 $("#reset").onclick = reset;
+
+// Show the floating mini preview only while the main one is off screen.
+const mini = $("#mini-look");
+mini.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+function updateMini() {
+  mini.classList.toggle("shown", $(".look-art").getBoundingClientRect().top < 0);
+}
+window.addEventListener("scroll", updateMini, { passive: true });
+mini.hidden = false;
+updateMini();
 document.querySelectorAll("[data-piece]").forEach((el) => {
   el.addEventListener("click", () => startEditing(el.dataset.piece));
 });

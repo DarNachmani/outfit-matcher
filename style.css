@@ -4,6 +4,7 @@
   --muted: #77736c;
   --hair: #d8d3ca;
   --hatch: #c9c3b8;
+  --card: #fbfaf7;
   --serif: "Cormorant Garamond", "Iowan Old Style", "Palatino", Georgia, serif;
   --sans: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   color-scheme: light;
@@ -16,6 +17,7 @@
     --muted: #8d8981;
     --hair: #2c2b29;
     --hatch: #3a3936;
+    --card: #1d1d1c;
     color-scheme: dark;
   }
 }
@@ -115,7 +117,25 @@ h1 {
 .piece-row.active .piece-action { color: var(--ink); border-bottom: 1px solid var(--ink); }
 
 /* Panel */
-.panel { padding-block: 28px 48px; scroll-margin-top: 8px; }
+.panel { padding-block: 28px 120px; scroll-margin-top: 8px; }
+
+/* Floating mini preview */
+.mini-look {
+  position: fixed;
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  width: 62px;
+  padding: 8px;
+  background: var(--card);
+  box-shadow: 0 0 0 1px var(--hair), 0 6px 20px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.mini-look.shown { opacity: 1; transform: none; pointer-events: auto; }
+.mini-look svg { display: block; width: 100%; }
+.mini-look .block { cursor: inherit; }
 .panel h2 {
   font: 500 1.75rem/1.15 var(--serif);
   margin: 8px 0 6px;
