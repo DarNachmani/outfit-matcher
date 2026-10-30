@@ -1,5 +1,18 @@
 // Clothing colors and the rules for which ones go together.
 // Edit this file to add colors or change what matches.
+//
+// Rules were checked against these menswear guides (Oct 2026):
+// - Effortless Gent, "What Color Clothes Go Together?"
+//   https://effortlessgent.com/clothing-color-combos/
+//   (neutrals always match; khaki, grey and denim pants go with any shirt;
+//   avoid outfits where pieces are the same color or very close in shade)
+// - Ape to Gentleman, "5 Chino Colours Every Man Should Own"
+//   https://www.apetogentleman.com/best-chino-colours-how-to-wear/
+// - FashionBeans, "Combining Colours"
+//   https://www.fashionbeans.com/2011/mens-fashion-basics-part-43-combining-colours
+// - The Modest Man, "Outdated Style Rules"
+//   https://www.themodestman.com/12-outdated-style-rules-guys-should-break-now/
+//   (black with navy and black with brown are fine when the shades contrast)
 
 // roles: which pieces this color is suggested for.
 const COLORS = [
@@ -31,31 +44,32 @@ const NEUTRALS = ["white", "black", "grey", "charcoal", "navy", "denim", "khaki"
 // "Great" pairings. Order doesn't matter: navy→white also means white→navy.
 const GREAT = {
   white:     ["navy", "denim", "khaki", "black", "charcoal", "olive", "grey", "tan", "burgundy", "forest", "brown", "rust", "lightblue"],
-  black:     ["white", "grey", "charcoal", "cream", "burgundy", "olive"],
+  black:     ["white", "grey", "charcoal", "cream", "burgundy", "olive", "mustard", "red", "denim"],
   grey:      ["navy", "black", "white", "burgundy", "pink", "lightblue", "lavender", "charcoal", "denim"],
   charcoal:  ["white", "lightblue", "pink", "burgundy", "grey", "lavender", "cream"],
   navy:      ["white", "khaki", "grey", "tan", "lightblue", "cream", "olive", "burgundy", "mustard", "pink", "rust", "brown"],
   lightblue: ["navy", "khaki", "grey", "charcoal", "tan", "white", "denim", "brown"],
   denim:     ["white", "grey", "olive", "brown", "rust", "mustard", "burgundy", "cream", "lightblue", "pink", "forest", "red"],
   olive:     ["white", "cream", "navy", "khaki", "tan", "denim", "black", "rust", "brown", "mustard", "burgundy"],
-  khaki:     ["navy", "white", "lightblue", "olive", "forest", "burgundy", "denim", "brown", "rust", "pink"],
+  khaki:     ["navy", "white", "lightblue", "olive", "forest", "burgundy", "denim", "brown", "rust", "pink", "grey"],
   tan:       ["navy", "white", "lightblue", "olive", "forest", "cream", "denim", "brown"],
   brown:     ["cream", "white", "lightblue", "navy", "olive", "khaki", "denim", "sage", "mustard", "tan"],
-  burgundy:  ["grey", "navy", "khaki", "white", "charcoal", "black", "denim", "cream", "olive"],
+  burgundy:  ["grey", "navy", "khaki", "white", "charcoal", "black", "denim", "cream", "olive", "lightblue"],
   forest:    ["khaki", "tan", "cream", "white", "navy", "denim", "brown", "grey"],
   sage:      ["white", "cream", "navy", "khaki", "brown", "tan", "denim"],
   mustard:   ["navy", "denim", "grey", "olive", "brown", "charcoal", "white"],
   rust:      ["denim", "navy", "olive", "cream", "khaki", "white", "brown"],
   cream:     ["navy", "olive", "brown", "forest", "burgundy", "charcoal", "black", "denim", "sage", "rust", "tan"],
-  pink:      ["navy", "grey", "khaki", "charcoal", "denim", "white"],
+  pink:      ["navy", "grey", "khaki", "charcoal", "denim", "white", "forest"],
   red:       ["navy", "denim", "white", "black", "grey"],
   lavender:  ["grey", "navy", "charcoal", "white", "denim"],
 };
 
-// Pairs that are better avoided, even though one of them is a neutral.
+// Pairs that are better avoided, even though one of them is a neutral:
+// shades this close look like a near-miss rather than a choice.
+// (Black with navy/brown/tan used to be "rules" — guides now call them fine.)
 const AVOID = [
-  ["black", "brown"], ["black", "navy"], ["black", "tan"],
-  ["navy", "denim"], ["cream", "white"], ["khaki", "tan"],
+  ["cream", "white"], ["khaki", "tan"],
 ];
 
 // Same color on two pieces is skipped, except these.

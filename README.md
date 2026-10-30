@@ -40,6 +40,15 @@ All rules are in `colors.js`:
 - `NEUTRALS` — colors that are "safe" with almost anything.
 - `AVOID` — pairs to never suggest, even if one is a neutral.
 
+### Where the rules come from
+
+The pairings follow common menswear advice and were checked against
+[Effortless Gent](https://effortlessgent.com/clothing-color-combos/),
+[Ape to Gentleman](https://www.apetogentleman.com/best-chino-colours-how-to-wear/),
+[FashionBeans](https://www.fashionbeans.com/2011/mens-fashion-basics-part-43-combining-colours) and
+[The Modest Man](https://www.themodestman.com/12-outdated-style-rules-guys-should-break-now/).
+They're guidelines, not laws — change them to taste.
+
 ## Ideas for later
 
 - Pick a color from a photo of the clothing item
