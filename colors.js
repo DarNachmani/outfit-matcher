@@ -75,5 +75,10 @@ const AVOID = [
 // Same color on two pieces is skipped, except these.
 const SAME_COLOR_OK = ["black"];
 
+// A jacket the same color as the pants makes a suit — a great match in these
+// classic suit colors. (Same-color denim is left out: matching double denim
+// tends to look like a uniform.)
+const SUIT_COLORS = ["navy", "grey", "charcoal", "black", "brown", "tan", "olive", "khaki", "cream", "burgundy", "forest"];
+
 const EARTH_TONES = ["olive", "khaki", "tan", "brown", "forest", "sage", "mustard", "rust", "cream"];
 const BOLD = ["red", "mustard", "rust", "pink", "burgundy", "lavender"];

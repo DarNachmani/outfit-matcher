@@ -12,8 +12,12 @@ const state = {
 
 // --- Matching ---------------------------------------------------------------
 
-// 2 = great, 1 = safe, 0 = doesn't match
-function pairScore(a, b) {
+const isSuit = (a, b, pieceA, pieceB) =>
+  a === b && SUIT_COLORS.includes(a) && [pieceA, pieceB].sort().join() === "jacket,pants";
+
+// 2 = great, 1 = safe, 0 = doesn't match. Pieces are only needed for the suit rule.
+function pairScore(a, b, pieceA, pieceB) {
+  if (isSuit(a, b, pieceA, pieceB)) return 2;
   if (a === b) return SAME_COLOR_OK.includes(a) ? 1 : 0;
   if (AVOID.some(([x, y]) => (x === a && y === b) || (x === b && y === a))) return 0;
   if (GREAT[a]?.includes(b) || GREAT[b]?.includes(a)) return 2;
@@ -23,10 +27,10 @@ function pairScore(a, b) {
 
 // Colors for `piece` that match every other piece already chosen, best first.
 function suggestionsFor(piece) {
-  const chosen = PIECES.filter((p) => p !== piece && state.outfit[p]).map((p) => state.outfit[p]);
+  const chosen = PIECES.filter((p) => p !== piece && state.outfit[p]);
   return COLORS.filter((c) => c.roles.includes(piece))
     .map((c) => {
-      const scores = chosen.map((o) => pairScore(c.id, o));
+      const scores = chosen.map((p) => pairScore(c.id, state.outfit[p], piece, p));
       const ok = scores.every((s) => s > 0);
       const great = scores.every((s) => s === 2);
       return { color: c, ok, great, total: scores.reduce((a, b) => a + b, 0) };
@@ -36,17 +40,20 @@ function suggestionsFor(piece) {
 }
 
 function outfitTip() {
-  const ids = PIECES.map((p) => state.outfit[p]).filter(Boolean);
+  const worn = PIECES.filter((p) => state.outfit[p]);
+  const ids = worn.map((p) => state.outfit[p]);
   if (ids.length < 2) return null;
   const pairs = [];
-  for (let i = 0; i < ids.length; i++)
-    for (let j = i + 1; j < ids.length; j++) pairs.push(pairScore(ids[i], ids[j]));
+  for (let i = 0; i < worn.length; i++)
+    for (let j = i + 1; j < worn.length; j++) pairs.push(pairScore(ids[i], ids[j], worn[i], worn[j]));
   const allGreat = pairs.every((s) => s === 2);
   const bold = ids.filter((id) => BOLD.includes(id));
   const earthy = ids.filter((id) => EARTH_TONES.includes(id));
+  const { jacket, pants } = state.outfit;
 
   let tip;
-  if (ids.every((id) => NEUTRALS.includes(id))) tip = "Classic and clean — at home almost anywhere.";
+  if (isSuit(jacket, pants, "jacket", "pants")) tip = `A ${byId[pants].name.toLowerCase()} suit — matching jacket and trousers, sharp and put-together.`;
+  else if (ids.every((id) => NEUTRALS.includes(id))) tip = "Classic and clean — at home almost anywhere.";
   else if (bold.length === 1) tip = `A single note of ${byId[bold[0]].name.toLowerCase()}, grounded by quiet basics.`;
   else if (earthy.length >= 2) tip = "Warm earth tones — relaxed, easy, made for autumn.";
   else tip = "A considered combination that sits well together.";
