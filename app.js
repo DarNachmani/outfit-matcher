@@ -93,6 +93,20 @@ function paintLook() {
     shirt.setAttribute("x", framed ? 38 : 0);
     shirt.setAttribute("width", framed ? 44 : 120);
   });
+  bounceMini();
+}
+
+// Give the floating preview a little bounce when the outfit changes.
+let lastOutfit = null;
+function bounceMini() {
+  const outfit = JSON.stringify(state.outfit);
+  if (lastOutfit !== null && outfit !== lastOutfit) {
+    const mini = $("#mini-look");
+    mini.classList.remove("pop");
+    void mini.offsetWidth; // restart the animation
+    mini.classList.add("pop");
+  }
+  lastOutfit = outfit;
 }
 
 function renderPieces() {
