@@ -235,18 +235,6 @@ window.addEventListener("popstate", (e) => {
   render();
 });
 
-// --- Theme color -------------------------------------------------------------
-// Android colors the status and navigation bars from theme-color; keep it in
-// sync with the page background in both light and dark mode.
-
-const darkQuery = matchMedia("(prefers-color-scheme: dark)");
-function syncThemeColor() {
-  const paper = getComputedStyle(document.documentElement).getPropertyValue("--paper").trim();
-  $('meta[name="theme-color"]').setAttribute("content", paper);
-}
-darkQuery.addEventListener("change", syncThemeColor);
-syncThemeColor();
-
 // --- Actions ----------------------------------------------------------------
 
 function nextPiece() {

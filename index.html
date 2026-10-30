@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Outfit Matcher</title>
   <meta name="color-scheme" content="light dark">
-  <!-- app.js keeps this in sync with light/dark mode (Android uses it for the system bars) -->
-  <meta name="theme-color" content="#f4f1ec">
+  <!-- Android system bar color. Kept dark in both themes to match manifest.json:
+       Android re-reads it on every step, so it must not depend on light/dark mode. -->
+  <meta name="theme-color" content="#0f0f0f">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Outfit">
@@ -16,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
   <header class="masthead">
@@ -47,7 +48,7 @@
     <section id="panel" class="panel"></section>
   </main>
 
-  <script src="colors.js?v=7"></script>
-  <script src="app.js?v=7"></script>
+  <script src="colors.js?v=8"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>
