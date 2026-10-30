@@ -75,13 +75,13 @@ h1 {
 /* The look: color-block composition + list of pieces */
 .look {
   display: grid;
-  grid-template-columns: 104px 1fr;
+  grid-template-columns: 112px 1fr;
   gap: 22px;
   padding-block: 24px;
   border-bottom: 1px solid var(--hair);
 }
 .look-art { width: 100%; display: block; }
-.block { cursor: pointer; transition: fill 0.35s ease, x 0.35s ease, width 0.35s ease; }
+.block { cursor: pointer; transition: fill 0.35s ease; }
 .block.empty { fill: url(#hatch); }
 .hatch-line { stroke: var(--hatch); stroke-width: 1.2; }
 .blk-jacket.empty { fill: transparent; }
@@ -136,14 +136,17 @@ h1 {
 }
 .mini-look.shown { opacity: 1; transform: none; pointer-events: auto; }
 .mini-look svg { display: block; width: 100%; overflow: visible; }
-.mini-look .block {
-  cursor: inherit;
+.mini-look .block { cursor: inherit; }
+
+/* The little outfit, used at the top and in the floating preview */
+.outfit { overflow: visible; }
+.outfit .block {
   stroke: rgba(128, 128, 128, 0.35);
   stroke-width: 1.5;
   stroke-linejoin: round;
 }
-.mini-look .blk-jacket.empty { stroke: none; }
-.mini-look .hanger {
+.outfit .blk-jacket.empty { stroke: none; }
+.outfit .hanger {
   fill: none;
   stroke: var(--muted);
   stroke-width: 5;
@@ -162,8 +165,8 @@ h1 {
   text-align: center;
 }
 /* Whenever a color is picked the outfit swings on its hanger and a sparkle twinkles */
-.mini-look .swing { transform-box: view-box; transform-origin: 60px -14px; }
-.mini-look.pop .swing { animation: mini-swing 0.9s ease-out; }
+.outfit .swing { transform-box: view-box; transform-origin: 60px -14px; }
+.pop .swing { animation: mini-swing 0.9s ease-out; }
 @keyframes mini-swing {
   0% { transform: rotate(0); }
   20% { transform: rotate(-9deg); }

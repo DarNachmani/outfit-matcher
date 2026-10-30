@@ -88,23 +88,19 @@ function paintLook() {
       el.classList.toggle("empty", !id);
     });
   }
-  const framed = Boolean(state.outfit.jacket);
-  document.querySelectorAll(".blk-shirt").forEach((shirt) => {
-    shirt.setAttribute("x", framed ? 38 : 0);
-    shirt.setAttribute("width", framed ? 44 : 120);
-  });
-  bounceMini();
+  swingOutfits();
 }
 
-// Give the floating preview a little bounce when the outfit changes.
+// The little outfits swing on their hangers when the outfit changes.
 let lastOutfit = null;
-function bounceMini() {
+function swingOutfits() {
   const outfit = JSON.stringify(state.outfit);
   if (lastOutfit !== null && outfit !== lastOutfit) {
-    const mini = $("#mini-look");
-    mini.classList.remove("pop");
-    void mini.offsetWidth; // restart the animation
-    mini.classList.add("pop");
+    for (const el of [$(".look"), $("#mini-look")]) {
+      el.classList.remove("pop");
+      void el.offsetWidth; // restart the animation
+      el.classList.add("pop");
+    }
   }
   lastOutfit = outfit;
 }
