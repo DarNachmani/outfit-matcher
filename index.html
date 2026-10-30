@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Outfit Matcher</title>
+  <meta name="theme-color" content="#1f2a44">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Outfit">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Outfit Matcher</h1>
+    <button id="reset" class="link">Start over</button>
+  </header>
+
+  <main>
+    <section class="preview">
+      <svg viewBox="0 0 200 300" aria-label="Outfit preview">
+        <!-- pants -->
+        <path data-piece="pants" class="piece svg-pants empty" d="M62 150 L138 150 L146 292 L108 292 L100 192 L92 292 L54 292 Z"/>
+        <!-- shirt -->
+        <path data-piece="shirt" class="piece svg-shirt empty" d="M62 20 Q100 40 138 20 L180 52 L162 82 L140 68 L140 146 L60 146 L60 68 L38 82 L20 52 Z"/>
+        <!-- jacket: two open front panels with long sleeves -->
+        <g id="jacket-layer" style="display:none">
+          <path data-piece="jacket" class="piece svg-jacket" d="M60 16 L86 16 L90 150 L56 150 L56 70 L40 148 L16 146 L22 52 Z"/>
+          <path data-piece="jacket" class="piece svg-jacket" d="M140 16 L114 16 L110 150 L144 150 L144 70 L160 148 L184 146 L178 52 Z"/>
+        </g>
+      </svg>
+      <div id="chips" class="chips"></div>
+    </section>
+
+    <section id="panel" class="panel"></section>
+  </main>
+
+  <script src="colors.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
