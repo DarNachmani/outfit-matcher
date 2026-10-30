@@ -53,6 +53,9 @@ They're guidelines, not laws — change them to taste.
 
 ## Ideas for later
 
+- More shoe colors: sand/beige suede (desert boots), off-white sneakers, olive,
+  and splitting brown into dark brown (dressier, works with charcoal) and
+  medium brown/cognac (casual). Maybe bold sneakers (green, red) too.
 - Pick a color from a photo of the clothing item
 - Accessories (belt, watch)
 - Save favorite outfits
