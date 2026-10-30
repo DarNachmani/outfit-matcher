@@ -37,7 +37,7 @@ function suggestionsFor(piece) {
 
 function outfitTip() {
   const ids = PIECES.map((p) => state.outfit[p]).filter(Boolean);
-  if (ids.length < 2) return "";
+  if (ids.length < 2) return null;
   const pairs = [];
   for (let i = 0; i < ids.length; i++)
     for (let j = i + 1; j < ids.length; j++) pairs.push(pairScore(ids[i], ids[j]));
@@ -46,122 +46,129 @@ function outfitTip() {
   const earthy = ids.filter((id) => EARTH_TONES.includes(id));
 
   let tip;
-  if (ids.every((id) => NEUTRALS.includes(id))) tip = "Classic and clean — works almost anywhere.";
-  else if (bold.length === 1) tip = `One pop of color (${byId[bold[0]].name.toLowerCase()}) with calm basics — nice balance.`;
-  else if (earthy.length >= 2) tip = "Earth tones — warm and relaxed, great for fall.";
-  else tip = "These colors work well together.";
-  return (allGreat ? "👍 Great match! " : "👌 Safe match. ") + tip;
+  if (ids.every((id) => NEUTRALS.includes(id))) tip = "Classic and clean — at home almost anywhere.";
+  else if (bold.length === 1) tip = `A single note of ${byId[bold[0]].name.toLowerCase()}, grounded by quiet basics.`;
+  else if (earthy.length >= 2) tip = "Warm earth tones — relaxed, easy, made for autumn.";
+  else tip = "A considered combination that sits well together.";
+  return { label: allGreat ? "Excellent match" : "Works well", tip };
 }
 
 // --- Rendering --------------------------------------------------------------
 
 const $ = (sel) => document.querySelector(sel);
+const lower = (piece) => LABELS[piece].toLowerCase();
 
-function paintPreview() {
+// Color-block composition: jacket frames the shirt, pants sit below.
+function paintLook() {
   for (const piece of PIECES) {
     const id = state.outfit[piece];
-    document.querySelectorAll(`.svg-${piece}`).forEach((el) => {
-      el.style.fill = id ? byId[id].hex : "transparent";
-      el.classList.toggle("empty", !id);
-    });
+    const el = $(`.blk-${piece}`);
+    el.style.fill = id ? byId[id].hex : "";
+    el.classList.toggle("empty", !id);
   }
-  $("#jacket-layer").style.display = state.outfit.jacket ? "" : "none";
+  const shirt = $(".blk-shirt");
+  const framed = Boolean(state.outfit.jacket);
+  shirt.setAttribute("x", framed ? 38 : 0);
+  shirt.setAttribute("width", framed ? 44 : 120);
 }
 
-function renderChips() {
-  const wrap = $("#chips");
-  wrap.innerHTML = "";
+function renderPieces() {
+  const list = $("#pieces");
+  list.innerHTML = "";
   for (const piece of PIECES) {
     const id = state.outfit[piece];
+    const li = document.createElement("li");
     const btn = document.createElement("button");
-    btn.className = "chip" + (state.editing === piece ? " active" : "");
-    btn.innerHTML = id
-      ? `<span class="dot" style="background:${byId[id].hex}"></span><span><small>${LABELS[piece]}</small>${byId[id].name}</span>`
-      : `<span class="dot add">+</span><span><small>${LABELS[piece]}</small>${piece === "jacket" && state.jacketSkipped ? "None" : "Choose"}</span>`;
+    btn.className = "piece-row" + (state.editing === piece ? " active" : "");
+    const name = id
+      ? `<span class="piece-name"><span class="tile-sm" style="background:${byId[id].hex}"></span>${byId[id].name}</span>`
+      : `<span class="piece-name placeholder">${piece === "jacket" && state.jacketSkipped ? "None" : "Not chosen"}</span>`;
+    btn.innerHTML = `<span><span class="label">${LABELS[piece]}</span>${name}</span><span class="piece-action">${id ? "Change" : "Add"}</span>`;
     btn.onclick = () => startEditing(piece);
-    wrap.appendChild(btn);
+    li.appendChild(btn);
+    list.appendChild(li);
   }
 }
 
-function swatchButton(color) {
-  const btn = document.createElement("button");
-  btn.className = "swatch";
-  btn.innerHTML = `<span class="sw" style="background:${color.hex}"></span><span class="name">${color.name}</span>`;
-  btn.onclick = () => choose(color.id);
-  return btn;
+function swatchGrid(colors, current) {
+  const grid = document.createElement("div");
+  grid.className = "grid";
+  for (const color of colors) {
+    const btn = document.createElement("button");
+    btn.className = "swatch" + (color.id === current ? " current" : "");
+    btn.innerHTML = `<span class="tile" style="background-color:${color.hex}"></span><span class="name">${color.name}</span>`;
+    btn.onclick = () => choose(color.id);
+    grid.appendChild(btn);
+  }
+  return grid;
 }
 
-function renderPanel() {
-  const panel = $("#panel");
-  panel.innerHTML = "";
-  const anyChosen = PIECES.some((p) => state.outfit[p]);
+function groupHead(title, count) {
+  return `<div class="group-head"><span class="label">${title}</span><span class="label">${count}</span></div>`;
+}
 
-  // Step 1: nothing chosen yet — ask where to start.
-  if (!state.editing && !anyChosen) {
-    panel.innerHTML = `<h2>What are you starting with?</h2><p class="hint">Pick the piece you already know you want to wear.</p>`;
-    const row = document.createElement("div");
-    row.className = "start-row";
-    for (const piece of PIECES) {
-      const b = document.createElement("button");
-      b.className = "big";
-      b.textContent = LABELS[piece];
-      b.onclick = () => startEditing(piece);
-      row.appendChild(b);
-    }
-    panel.appendChild(row);
-    return;
+function renderStart(panel) {
+  panel.innerHTML = `<p class="label">Begin</p><h2>What are you <em>starting</em> with?</h2><p class="lede">Choose the piece you already know you’ll wear.</p>`;
+  const list = document.createElement("ul");
+  list.className = "start-list";
+  for (const piece of PIECES) {
+    const li = document.createElement("li");
+    li.innerHTML = `<button>${LABELS[piece]}<span>→</span></button>`;
+    li.firstChild.onclick = () => startEditing(piece);
+    list.appendChild(li);
   }
+  panel.appendChild(list);
+}
 
-  // Done: show the result.
-  if (!state.editing) {
-    panel.innerHTML = `<h2>Your outfit</h2><p class="tip">${outfitTip()}</p><p class="hint">Tap any piece above to change it.</p>`;
-    const again = document.createElement("button");
-    again.className = "secondary";
-    again.textContent = "Start over";
-    again.onclick = reset;
-    panel.appendChild(again);
-    return;
-  }
+function renderVerdict(panel) {
+  const verdict = outfitTip();
+  const ids = PIECES.filter((p) => state.outfit[p]);
+  panel.innerHTML = `
+    <div class="verdict">
+      <p class="label">The verdict · ${verdict.label}</p>
+      <p class="tip">${verdict.tip}</p>
+      <div class="combo">${ids.map((p) => `<div style="background:${byId[state.outfit[p]].hex}"></div>`).join("")}</div>
+      <div class="combo-names">${ids.map((p) => `<span>${byId[state.outfit[p]].name} ${lower(p)}</span>`).join("")}</div>
+    </div>`;
+  const again = document.createElement("button");
+  again.className = "btn";
+  again.textContent = "Start a new look";
+  again.onclick = reset;
+  panel.appendChild(again);
+}
 
-  // Picking a color for one piece.
+function renderPicker(panel) {
   const piece = state.editing;
   const others = PIECES.filter((p) => p !== piece && state.outfit[p]);
-  const title = others.length
-    ? `${LABELS[piece]} colors that go with your ${others.map((p) => byId[state.outfit[p]].name.toLowerCase() + " " + LABELS[p].toLowerCase()).join(" and ")}`
-    : `What color is the ${LABELS[piece].toLowerCase()}?`;
-  panel.innerHTML = `<h2>${title}</h2>`;
-
-  // For the first piece show every color so he can find the item he owns.
-  const fullList = others.length ? suggestionsFor(piece) : COLORS.map((c) => ({ color: c }));
-
-  const great = fullList.filter((s) => s.great);
-  const safe = fullList.filter((s) => s.great === false);
-  const grid = (items) => {
-    const g = document.createElement("div");
-    g.className = "grid";
-    items.forEach((s) => g.appendChild(swatchButton(s.color)));
-    return g;
-  };
+  const current = state.outfit[piece];
 
   if (!others.length) {
-    panel.appendChild(grid(fullList));
-  } else if (!fullList.length) {
-    panel.insertAdjacentHTML("beforeend", `<p class="hint">Nothing matches this combo well — try changing one of the other pieces.</p>`);
+    // First piece: show every color so he can find the item he owns.
+    panel.innerHTML = `<p class="label">Step 1 · ${LABELS[piece]}</p><h2>What color is the ${lower(piece)}?</h2><p class="lede">Pick the closest shade.</p>`;
+    panel.appendChild(swatchGrid(COLORS, current));
   } else {
+    const withText = others.map((p) => `${byId[state.outfit[p]].name.toLowerCase()} ${lower(p)}`).join(" and ");
+    panel.innerHTML = `<p class="label">Step ${others.length + 1} · ${LABELS[piece]}</p><h2>${LABELS[piece]} to wear with your <em>${withText}</em></h2>`;
+    const matches = suggestionsFor(piece);
+    const great = matches.filter((s) => s.great).map((s) => s.color);
+    const safe = matches.filter((s) => !s.great).map((s) => s.color);
+    if (!matches.length) {
+      panel.insertAdjacentHTML("beforeend", `<p class="empty-note">Nothing sits well with this combination — try changing one of the other pieces.</p>`);
+    }
     if (great.length) {
-      panel.insertAdjacentHTML("beforeend", `<h3>Great match</h3>`);
-      panel.appendChild(grid(great));
+      panel.insertAdjacentHTML("beforeend", groupHead("Best match", great.length));
+      panel.appendChild(swatchGrid(great, current));
     }
     if (safe.length) {
-      panel.insertAdjacentHTML("beforeend", `<h3>Also works</h3>`);
-      panel.appendChild(grid(safe));
+      panel.insertAdjacentHTML("beforeend", groupHead("Also works", safe.length));
+      panel.appendChild(swatchGrid(safe, current));
     }
   }
 
   if (piece === "jacket") {
     const skip = document.createElement("button");
-    skip.className = "secondary";
-    skip.textContent = state.outfit.jacket ? "Remove jacket" : "No jacket today";
+    skip.className = "btn ghost";
+    skip.textContent = current ? "Remove jacket" : "No jacket today";
     skip.onclick = () => {
       state.outfit.jacket = null;
       state.jacketSkipped = true;
@@ -173,9 +180,14 @@ function renderPanel() {
 }
 
 function render() {
-  paintPreview();
-  renderChips();
-  renderPanel();
+  paintLook();
+  renderPieces();
+  const panel = $("#panel");
+  panel.innerHTML = "";
+  const anyChosen = PIECES.some((p) => state.outfit[p]);
+  if (state.editing) renderPicker(panel);
+  else if (anyChosen) renderVerdict(panel);
+  else renderStart(panel);
 }
 
 // --- Actions ----------------------------------------------------------------
