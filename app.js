@@ -1,11 +1,13 @@
 // Outfit Matcher UI logic. Color data and rules live in colors.js.
 
-const PIECES = ["shirt", "pants", "jacket"];
-const LABELS = { shirt: "Shirt", pants: "Pants", jacket: "Jacket" };
+const PIECES = ["shirt", "pants", "shoes", "jacket"];
+const LABELS = { shirt: "Shirt", pants: "Pants", shoes: "Shoes", jacket: "Jacket" };
+const PLURAL = ["pants", "shoes"];
+const EMPTY_OUTFIT = { shirt: null, pants: null, shoes: null, jacket: null };
 const byId = Object.fromEntries(COLORS.map((c) => [c.id, c]));
 
 const state = {
-  outfit: { shirt: null, pants: null, jacket: null },
+  outfit: { ...EMPTY_OUTFIT },
   jacketSkipped: false,
   editing: null, // which piece is being picked right now
 };
@@ -15,8 +17,18 @@ const state = {
 const isSuit = (a, b, pieceA, pieceB) =>
   a === b && SUIT_COLORS.includes(a) && [pieceA, pieceB].sort().join() === "jacket,pants";
 
-// 2 = great, 1 = safe, 0 = doesn't match. Pieces are only needed for the suit rule.
+// Shoes only need to suit the pants (see SHOES in colors.js).
+function shoeScore(shoe, other, otherPiece) {
+  if (otherPiece !== "pants") return 2;
+  const rule = SHOES[shoe];
+  if (!rule) return 0;
+  return rule.great.includes(other) ? 2 : rule.safe.includes(other) ? 1 : 0;
+}
+
+// 2 = great, 1 = safe, 0 = doesn't match. Pieces are needed for the suit and shoe rules.
 function pairScore(a, b, pieceA, pieceB) {
+  if (pieceA === "shoes") return shoeScore(a, b, pieceB);
+  if (pieceB === "shoes") return shoeScore(b, a, pieceA);
   if (isSuit(a, b, pieceA, pieceB)) return 2;
   if (a === b) return SAME_COLOR_OK.includes(a) ? 1 : 0;
   if (AVOID.some(([x, y]) => (x === a && y === b) || (x === b && y === a))) return 0;
@@ -47,13 +59,15 @@ function outfitTip() {
   for (let i = 0; i < worn.length; i++)
     for (let j = i + 1; j < worn.length; j++) pairs.push(pairScore(ids[i], ids[j], worn[i], worn[j]));
   const allGreat = pairs.every((s) => s === 2);
-  const bold = ids.filter((id) => BOLD.includes(id));
-  const earthy = ids.filter((id) => EARTH_TONES.includes(id));
+  // The tip describes the clothes; shoes only affect whether it's a great match.
+  const clothes = worn.filter((p) => p !== "shoes").map((p) => state.outfit[p]);
+  const bold = clothes.filter((id) => BOLD.includes(id));
+  const earthy = clothes.filter((id) => EARTH_TONES.includes(id));
   const { jacket, pants } = state.outfit;
 
   let tip;
   if (isSuit(jacket, pants, "jacket", "pants")) tip = `A ${byId[pants].name.toLowerCase()} suit — matching jacket and trousers, sharp and put-together.`;
-  else if (ids.every((id) => NEUTRALS.includes(id))) tip = "Classic and clean — at home almost anywhere.";
+  else if (clothes.every((id) => NEUTRALS.includes(id))) tip = "Classic and clean — at home almost anywhere.";
   else if (bold.length === 1) tip = `A single note of ${byId[bold[0]].name.toLowerCase()}, grounded by quiet basics.`;
   else if (earthy.length >= 2) tip = "Warm earth tones — relaxed, easy, made for autumn.";
   else tip = "A considered combination that sits well together.";
@@ -69,9 +83,10 @@ const lower = (piece) => LABELS[piece].toLowerCase();
 function paintLook() {
   for (const piece of PIECES) {
     const id = state.outfit[piece];
-    const el = $(`.blk-${piece}`);
-    el.style.fill = id ? byId[id].hex : "";
-    el.classList.toggle("empty", !id);
+    document.querySelectorAll(`.blk-${piece}`).forEach((el) => {
+      el.style.fill = id ? byId[id].hex : "";
+      el.classList.toggle("empty", !id);
+    });
   }
   const shirt = $(".blk-shirt");
   const framed = Boolean(state.outfit.jacket);
@@ -150,9 +165,11 @@ function renderPicker(panel) {
   const current = state.outfit[piece];
 
   if (!others.length) {
-    // First piece: show every color so he can find the item he owns.
-    panel.innerHTML = `<p class="label">Step 1 · ${LABELS[piece]}</p><h2>What color is the ${lower(piece)}?</h2><p class="lede">Pick the closest shade.</p>`;
-    panel.appendChild(swatchGrid(COLORS, current));
+    // First piece: show every color so he can find the item he owns
+    // (shoes only come in shoe colors).
+    const verb = PLURAL.includes(piece) ? "are" : "is";
+    panel.innerHTML = `<p class="label">Step 1 · ${LABELS[piece]}</p><h2>What color ${verb} the ${lower(piece)}?</h2><p class="lede">Pick the closest shade.</p>`;
+    panel.appendChild(swatchGrid(piece === "shoes" ? COLORS.filter((c) => c.roles.includes("shoes")) : COLORS, current));
   } else {
     const withText = others.map((p) => `${byId[state.outfit[p]].name.toLowerCase()} ${lower(p)}`).join(" and ");
     panel.innerHTML = `<p class="label">Step ${others.length + 1} · ${LABELS[piece]}</p><h2>${LABELS[piece]} to wear with your <em>${withText}</em></h2>`;
@@ -200,8 +217,11 @@ function render() {
 // --- Actions ----------------------------------------------------------------
 
 function nextPiece() {
+  // Shoes only narrow down the pants, so pick those next.
+  if (state.outfit.shoes && !state.outfit.pants) return "pants";
   if (!state.outfit.shirt) return "shirt";
   if (!state.outfit.pants) return "pants";
+  if (!state.outfit.shoes) return "shoes";
   if (!state.outfit.jacket && !state.jacketSkipped) return "jacket";
   return null;
 }
@@ -221,7 +241,7 @@ function choose(id) {
 }
 
 function reset() {
-  state.outfit = { shirt: null, pants: null, jacket: null };
+  state.outfit = { ...EMPTY_OUTFIT };
   state.jacketSkipped = false;
   state.editing = null;
   render();

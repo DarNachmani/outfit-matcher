@@ -14,20 +14,20 @@
 //   https://www.themodestman.com/12-outdated-style-rules-guys-should-break-now/
 //   (black with navy and black with brown are fine when the shades contrast)
 
-// roles: which pieces this color is suggested for.
+// roles: which pieces this color is suggested for (shoes come in fewer colors).
 const COLORS = [
-  { id: "white",     name: "White",       hex: "#f7f7f5", roles: ["shirt", "pants"] },
-  { id: "black",     name: "Black",       hex: "#1c1c1c", roles: ["shirt", "pants", "jacket"] },
-  { id: "grey",      name: "Grey",        hex: "#9a9da1", roles: ["shirt", "pants", "jacket"] },
+  { id: "white",     name: "White",       hex: "#f7f7f5", roles: ["shirt", "pants", "shoes"] },
+  { id: "black",     name: "Black",       hex: "#1c1c1c", roles: ["shirt", "pants", "jacket", "shoes"] },
+  { id: "grey",      name: "Grey",        hex: "#9a9da1", roles: ["shirt", "pants", "jacket", "shoes"] },
   { id: "charcoal",  name: "Charcoal",    hex: "#45484d", roles: ["shirt", "pants", "jacket"] },
-  { id: "navy",      name: "Navy",        hex: "#1f2a44", roles: ["shirt", "pants", "jacket"] },
+  { id: "navy",      name: "Navy",        hex: "#1f2a44", roles: ["shirt", "pants", "jacket", "shoes"] },
   { id: "lightblue", name: "Light Blue",  hex: "#a9c8e8", roles: ["shirt"] },
   { id: "denim",     name: "Denim Blue",  hex: "#4a6b8f", roles: ["shirt", "pants", "jacket"] },
   { id: "olive",     name: "Olive",       hex: "#6b6b3a", roles: ["shirt", "pants", "jacket"] },
   { id: "khaki",     name: "Khaki",       hex: "#c8b88a", roles: ["shirt", "pants", "jacket"] },
-  { id: "tan",       name: "Tan",         hex: "#b08a5e", roles: ["shirt", "pants", "jacket"] },
-  { id: "brown",     name: "Brown",       hex: "#5c3e2b", roles: ["shirt", "pants", "jacket"] },
-  { id: "burgundy",  name: "Burgundy",    hex: "#6d1f2c", roles: ["shirt", "pants", "jacket"] },
+  { id: "tan",       name: "Tan",         hex: "#b08a5e", roles: ["shirt", "pants", "jacket", "shoes"] },
+  { id: "brown",     name: "Brown",       hex: "#5c3e2b", roles: ["shirt", "pants", "jacket", "shoes"] },
+  { id: "burgundy",  name: "Burgundy",    hex: "#6d1f2c", roles: ["shirt", "pants", "jacket", "shoes"] },
   { id: "forest",    name: "Forest Green",hex: "#2f4a35", roles: ["shirt", "pants", "jacket"] },
   { id: "sage",      name: "Sage",        hex: "#a3b19a", roles: ["shirt", "jacket"] },
   { id: "mustard",   name: "Mustard",     hex: "#d0a23a", roles: ["shirt", "jacket"] },
@@ -82,3 +82,40 @@ const SUIT_COLORS = ["navy", "grey", "charcoal", "black", "brown", "tan", "olive
 
 const EARTH_TONES = ["olive", "khaki", "tan", "brown", "forest", "sage", "mustard", "rust", "cream"];
 const BOLD = ["red", "mustard", "rust", "pink", "burgundy", "lavender"];
+
+// Shoes are matched to the pants only — the shirt and jacket don't really
+// affect which shoes work. Shoe color → pants colors.
+// Sources: Bespoke Unit trouser/shoe coordination guide, FashionBeans shoe
+// colour guide, John White chinos guide (brown/tan suit navy, grey, khaki,
+// olive and jeans; brown with black trousers doesn't work; black shoes suit
+// black, charcoal and grey; white sneakers go with almost anything casual).
+const SHOES = {
+  white: {
+    great: ["navy", "denim", "khaki", "olive", "grey", "charcoal", "black", "tan", "brown", "cream", "forest", "burgundy"],
+    safe:  ["white"],
+  },
+  black: {
+    great: ["black", "charcoal", "grey"],
+    safe:  ["navy", "denim", "white", "burgundy"],
+  },
+  brown: {
+    great: ["navy", "grey", "khaki", "olive", "denim", "tan", "cream", "white", "burgundy", "forest"],
+    safe:  ["charcoal", "brown"],
+  },
+  tan: {
+    great: ["navy", "denim", "grey", "olive", "white", "cream", "forest"],
+    safe:  ["khaki", "charcoal", "brown", "burgundy"],
+  },
+  burgundy: {
+    great: ["navy", "grey", "charcoal", "khaki", "denim", "olive"],
+    safe:  ["tan", "cream", "white", "black"],
+  },
+  grey: {
+    great: ["navy", "denim", "black", "charcoal", "white"],
+    safe:  ["grey", "khaki", "olive", "burgundy"],
+  },
+  navy: {
+    great: ["grey", "khaki", "white", "cream", "tan"],
+    safe:  ["denim", "navy", "olive", "brown"],
+  },
+};

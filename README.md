@@ -1,11 +1,11 @@
 # Outfit Matcher
 
 A simple phone-friendly web app that helps pick clothing colors that go together:
-shirt + pants, with an optional jacket.
+shirt, pants and shoes, with an optional jacket.
 
 ## How to use
 
-1. Tap the piece you're starting with — **Shirt**, **Pants**, or **Jacket**.
+1. Tap the piece you're starting with — **Shirt**, **Pants**, **Shoes** or **Jacket**.
 2. Pick its color.
 3. The app shows matching colors for the other pieces ("Great match" first, then "Also works").
    Each choice narrows down the suggestions for the rest.
@@ -39,6 +39,8 @@ All rules are in `colors.js`:
 - `GREAT` — pairs that look great together. Listing a pair once is enough (it works both ways).
 - `NEUTRALS` — colors that are "safe" with almost anything.
 - `AVOID` — pairs to never suggest, even if one is a neutral.
+- `SUIT_COLORS` — colors where a jacket matching the pants (a suit) is suggested.
+- `SHOES` — shoe colors and which pants they go with (shoes are matched to the pants only).
 
 ### Where the rules come from
 
@@ -52,6 +54,6 @@ They're guidelines, not laws — change them to taste.
 ## Ideas for later
 
 - Pick a color from a photo of the clothing item
-- Shoes and accessories
+- Accessories (belt, watch)
 - Save favorite outfits
 - Occasion filter (work / casual / date night)
