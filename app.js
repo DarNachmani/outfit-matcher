@@ -197,7 +197,7 @@ function renderPicker(panel) {
       state.outfit.jacket = null;
       state.jacketSkipped = true;
       state.editing = nextPiece();
-      render();
+      commit();
     };
     panel.appendChild(skip);
   }
@@ -214,6 +214,39 @@ function render() {
   else renderStart(panel);
 }
 
+// --- History ----------------------------------------------------------------
+// Each step is saved as a browser history entry, so the phone's Back button
+// steps back through the outfit instead of closing the app.
+
+function snapshot() {
+  return { outfit: { ...state.outfit }, jacketSkipped: state.jacketSkipped, editing: state.editing };
+}
+
+function commit() {
+  history.pushState(snapshot(), "");
+  render();
+}
+
+window.addEventListener("popstate", (e) => {
+  if (!e.state) return;
+  state.outfit = { ...e.state.outfit };
+  state.jacketSkipped = e.state.jacketSkipped;
+  state.editing = e.state.editing;
+  render();
+});
+
+// --- Theme color -------------------------------------------------------------
+// Android colors the status and navigation bars from theme-color; keep it in
+// sync with the page background in both light and dark mode.
+
+const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+function syncThemeColor() {
+  const paper = getComputedStyle(document.documentElement).getPropertyValue("--paper").trim();
+  $('meta[name="theme-color"]').setAttribute("content", paper);
+}
+darkQuery.addEventListener("change", syncThemeColor);
+syncThemeColor();
+
 // --- Actions ----------------------------------------------------------------
 
 function nextPiece() {
@@ -227,8 +260,9 @@ function nextPiece() {
 }
 
 function startEditing(piece) {
+  if (state.editing === piece) return;
   state.editing = piece;
-  render();
+  commit();
   $("#panel").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -237,18 +271,19 @@ function choose(id) {
   state.outfit[piece] = id;
   if (piece === "jacket") state.jacketSkipped = false;
   state.editing = nextPiece();
-  render();
+  commit();
 }
 
 function reset() {
   state.outfit = { ...EMPTY_OUTFIT };
   state.jacketSkipped = false;
   state.editing = null;
-  render();
+  commit();
 }
 
 $("#reset").onclick = reset;
 document.querySelectorAll("[data-piece]").forEach((el) => {
   el.addEventListener("click", () => startEditing(el.dataset.piece));
 });
+history.replaceState(snapshot(), "");
 render();
